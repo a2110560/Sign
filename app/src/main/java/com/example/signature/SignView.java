@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class SignView extends View {
-    private LinkedList<HashMap<String,Float>> line =new LinkedList<>();
+    private LinkedList<LinkedList<HashMap<String,Float>>> lines =new LinkedList<>();
     public SignView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -24,11 +24,13 @@ public class SignView extends View {
         super.onDraw(canvas);
         Paint paint=new Paint();
         paint.setColor(Color.RED);
-        paint.setStrokeWidth(20);
-        for (int i=1;i<line.size();i++){
-            HashMap<String,Float> p0=line.get(i-1);//起始點
-            HashMap<String,Float> p1=line.get(i);//結束點
-            canvas.drawLine(p0.get("x"),p0.get("y"),p1.get("x"),p1.get("y"),paint);
+        paint.setStrokeWidth(5);
+        for (LinkedList<HashMap<String,Float>> line:lines){
+            for (int i=1;i<line.size();i++){
+                HashMap<String,Float> p0=line.get(i-1);//起始點
+                HashMap<String,Float> p1=line.get(i);//結束點
+                canvas.drawLine(p0.get("x"),p0.get("y"),p1.get("x"),p1.get("y"),paint);
+            }
         }
     }
 
@@ -37,8 +39,17 @@ public class SignView extends View {
         HashMap<String,Float> point=new HashMap<>();
         point.put("x",event.getX());
         point.put("y",event.getY());
+        LinkedList<HashMap<String,Float>> line=null;
+        if(event.getAction()==MotionEvent.ACTION_DOWN){
+            line=new LinkedList<>();
+            lines.add(line);
+        }else if(event.getAction()==MotionEvent.ACTION_MOVE){
+            line=lines.getLast();
+        }
+        if(line!=null){
         line.add(point);
-        invalidate();//會去觸發ondraw
+        invalidate();//會去觸發ondraw，改寫畫面
+        }
         return true;//改true會持續偵測，最原始觸發點
     }
 }
