@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 
 public class SignView extends View {
     private LinkedList<LinkedList<HashMap<String,Float>>> lines =new LinkedList<>();
+    private LinkedList<LinkedList<HashMap<String,Float>>> recycler =new LinkedList<>();
     public SignView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -25,6 +27,7 @@ public class SignView extends View {
         Paint paint=new Paint();
         paint.setColor(Color.RED);
         paint.setStrokeWidth(5);
+
         for (LinkedList<HashMap<String,Float>> line:lines){
             for (int i=1;i<line.size();i++){
                 HashMap<String,Float> p0=line.get(i-1);//起始點
@@ -48,8 +51,28 @@ public class SignView extends View {
         }
         if(line!=null){
         line.add(point);
+        recycler.clear();
         invalidate();//會去觸發ondraw，改寫畫面
         }
         return true;//改true會持續偵測，最原始觸發點
+    }
+    public void clear(){
+        lines.clear();
+        invalidate();
+    }
+
+    public void undo(){
+        if(lines.size()>0){
+            recycler.add(lines.removeLast());
+            invalidate();
+        }
+
+    }
+    public void redo(){
+        if(recycler.size()>0){
+            lines.addLast(recycler.removeLast());
+            invalidate();
+        }
+
     }
 }

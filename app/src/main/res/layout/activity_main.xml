@@ -14,12 +14,25 @@
         android:layout_height="match_parent">
 
         <Button
+            android:id="@+id/clear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Clear"/>
+            android:text="Clear"
+            android:onClick="clear"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UNDO"
+            android:onClick="undo"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="REDO"
+            android:onClick="redo"/>
 
     </LinearLayout>
     <com.example.signature.SignView
+        android:id="@+id/signview"
         android:layout_width="0dp"
         android:layout_weight="7"
         android:layout_height="match_parent"/>
